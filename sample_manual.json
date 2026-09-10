@@ -1,0 +1,22 @@
+{
+  "run_name": 0,
+  "deck_path": "sample/deck_fc",
+  "deck_imports": ["sample/pdk"],
+  "specs": {
+    "ms0": ["negative_total_current_uA"],
+    "ma0": ["gain_db", "log10_ugbw", "pm_deg", "cmrr_db"]
+  },
+  "reject_spec": [-100.0, 0.0, 6.0, 40.0, 40.0],
+  "max_evals": 20000,
+  "target_spec": [-5.2232, 38.2163, 6.6529, 60.0, 70.4884],
+  "pre_weight": [0.02, 0.025, 0.5, 0.015625, 0.025],
+  "post_weight": [0.02, 0.025, 0.5, 0.0, 0.025],
+  "design_space": {
+    "R": [1.0, 1000.0, null, "k", true],
+    "C": [10, 1000, null, "f", false],
+    "L": [180, 360, 5, "n", false],
+    "W": [45, 90, 5, "n", false],
+    "M": [1, 60, 1, "", false],
+    "M0": [20, 60, 1, "", false]
+  }
+}
