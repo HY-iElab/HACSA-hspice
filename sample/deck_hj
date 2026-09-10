@@ -1,0 +1,124 @@
+* Huijsing Amplifier - HSPICE
+.include "pdk"
+.include "@PARAM_PATH@"
+
+* AMP
+.subckt AMP vdd vinn vinp vnb1 vnb2 vnb3 vout
++ vpb1 vpb2 vpb3 vss
++ n1 n2 n3 n4 n5 n6 n7 n8 n9 n10
+
+m0 n4 n8 vdd vdd pmos l='L0' w='W0' m='M0'
+m1 n10 n8 vdd vdd pmos l='L0' w='W0' m='M0'
+
+m2 n8 vpb2 n10 vdd pmos l='L1' w='W1' m='M1'
+m3 n1 vpb2 n4 vdd pmos l='L1' w='W1' m='M1'
+
+m4 n3 vinp n5 vdd pmos l='L2' w='W2' m='M2'
+m5 n9 vinn n5 vdd pmos l='L2' w='W2' m='M2'
+
+m6 n2 vnb2 n3 vss nmos l='L3' w='W3' m='M3'
+m7 n7 vnb2 n9 vss nmos l='L3' w='W3' m='M3'
+
+m8 n5 vpb1 vdd vdd pmos l='L4' w='W4' m='M4'
+
+m9 n3 n7 vss vss nmos l='L5' w='W5' m='M5'
+m10 n9 n7 vss vss nmos l='L5' w='W5' m='M5'
+
+m11 vout n1 vdd vdd pmos l='L6' w='W6' m='M6'
+m12 vout n2 vss vss nmos l='L7' w='W7' m='M7'
+
+m13 n6 vnb1 vss vss nmos l='L8' w='W8' m='M8'
+
+m14 n4 vinp n6 vss nmos l='L9' w='W9' m='M9'
+m15 n10 vinn n6 vss nmos l='L9' w='W9' m='M9'
+
+m16 n7 vpb3 n8 vdd pmos l='L10' w='W10' m='M10'
+m17 n2 vpb3 n1 vdd pmos l='L10' w='W10' m='M10'
+
+m18 n8 vnb3 n7 vss nmos l='L11' w='W11' m='M11'
+m19 n1 vnb3 n2 vss nmos l='L11' w='W11' m='M11'
+
+c1 vout n3 'C0'
+c2 n4 vout 'C0'
+
+.ends AMP
+
+* BIAS
+.subckt BIAS vbn1 vbn2 vbn3 vbp1 vbp2 vbp3 vdd vss iref
+
+m32 n46 vbp2 n42 vdd pmos l='L12' w='W12' m='M12'
+m31 n42 vbp2 n58 vdd pmos l='L12' w='W12' m='M12'
+m38 n56 vbp1 vdd vdd pmos l='L12' w='W12' m='M12'
+m41 n57 vbp2 n36 vdd pmos l='L12' w='W12' m='M12'
+m40 n58 vbp2 n57 vdd pmos l='L12' w='W12' m='M12'
+m19 vbn1 vbp2 n99 vdd pmos l='L12' w='W12' m='M12'
+m18 vbn2 vbp2 n101 vdd pmos l='L12' w='W12' m='M12'
+m17 n101 vbp1 vdd vdd pmos l='L12' w='W12' m='M12'
+m16 n99 vbp1 vdd vdd pmos l='L12' w='W12' m='M12'
+m15 n36 vbp2 vdd vdd pmos l='L12' w='W12' m='M12'
+m14 n37 vbp1 vdd vdd pmos l='L12' w='W12' m='M12'
+m13 vbn3 vbp2 n37 vdd pmos l='L12' w='W12' m='M12'
+m12 vbp2 vbp2 n46 vdd pmos l='L12' w='W12' m='M12'
+m5 n82 n82 vdd vdd pmos l='L12' w='W12' m='M12'
+m3 vbp1 vbp2 n56 vdd pmos l='L12' w='W12' m='M12'
+m2 vbp3 vbp3 n82 vdd pmos l='L12' w='W12' m='M12'
+
+m33 n40 vbn2 n39 vss nmos l='L13' w='W13' m='M13'
+m34 n39 vbn2 n59 vss nmos l='L13' w='W13' m='M13'
+m35 n59 vbn2 n62 vss nmos l='L13' w='W13' m='M13'
+m25 iref iref b vss nmos l='L13' w='W13' m='M13'
+m24 b b vss vss nmos l='L13' w='W13' m='M13'
+m39 n61 vbn2 vss vss nmos l='L13' w='W13' m='M13'
+m22 n100 vbn1 vss vss nmos l='L13' w='W13' m='M13'
+m21 vbn2 vbn2 n40 vss nmos l='L13' w='W13' m='M13'
+m20 vbn1 vbn2 n100 vss nmos l='L13' w='W13' m='M13'
+m11 vbp2 iref n104 vss nmos l='L13' w='W13' m='M13'
+m8 vbn3 vbn3 n95 vss nmos l='L13' w='W13' m='M13'
+m42 n62 vbn2 n61 vss nmos l='L13' w='W13' m='M13'
+m7 vbp3 iref n108 vss nmos l='L13' w='W13' m='M13'
+m6 vbp1 iref n106 vss nmos l='L13' w='W13' m='M13'
+m10 n108 b vss vss nmos l='L13' w='W13' m='M13'
+m9 n106 b vss vss nmos l='L13' w='W13' m='M13'
+m1 n104 b vss vss nmos l='L13' w='W13' m='M13'
+m0 n95 n95 vss vss nmos l='L13' w='W13' m='M13'
+
+.ends BIAS
+
+vin in 0 DC=0 AC=1.0
+ein1 vinp cm in 0 0.5
+ein2 vinn cm in 0 -0.5
+
+vcm cm 0 DC=0.6
+vdd VDD 0 DC=1.2
+vss VSS 0 DC=0
+
+iref vdd iref 'I0'
+
+xi2 vnb1 vnb2 vnb3 vpb1 vpb2 vpb3
++ vdd vss iref BIAS
+
+xi0 vdd vinn vinp vnb1 vnb2 vnb3 vout
++ vpb1 vpb2 vpb3 vss
++ n1 n2 n3 n4 n5 n6 n7 n8 n9 n10 AMP
+
+.option MEASFORM=2 MEASDGT=8
+
+.dc vdd 1.2 1.2 0.1
+
+.measure dc negative_total_current_uA
++ FIND PAR('I(vdd)*1e6') AT=1.2
+
+.ac dec 10 1k 10G
+
+.measure ac gain_db
++ FIND VDB(vout) AT=1k
+
+.measure ac log10_ugbw
++ FIND PAR('LOG10(HERTZ)')
++ WHEN VDB(vout)=0 FALL=1
+
+.measure ac pm_deg
++ FIND PAR('VP(vout)-180*VP(vout)/ABS(VP(vout))')
++ WHEN VDB(vout)=0 FALL=1
+
+.end

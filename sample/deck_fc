@@ -1,0 +1,110 @@
+* Folded-cascode fully differential OPAMP with CMFB - HSPICE
+.include "pdk"
+.include "@PARAM_PATH@"
+
+.subckt FC_CORE VDD VB1 VB2 VB5 VREF INP INN OUTP OUTN
+
+MP1P FP VB1 VDD VDD pmos l='L0' w='W0' m='M0'
+MP2P X1P CM_CTRL FP VDD pmos l='L1' w='W1' m='M1'
+MN5P FP INP VB3 0 nmos l='L2' w='W2' m='M2'
+MN3P X1P VB3 N3P 0 nmos l='L3' w='W3' m='M3'
+MN4P N3P VB4 0 0 nmos l='L4' w='W4' m='M4'
+MP8P OUTP VB2 VDD VDD pmos l='L5' w='W5' m='M5'
+MN9P OUTP X1P 0 0 nmos l='L6' w='W6' m='M6'
+
+MP1N FN VB1 VDD VDD pmos l='L0' w='W0' m='M0'
+MP2N X1N CM_CTRL FN VDD pmos l='L1' w='W1' m='M1'
+MN5N FN INN VB3 0 nmos l='L2' w='W2' m='M2'
+MN3N X1N VB3 N3N 0 nmos l='L3' w='W3' m='M3'
+MN4N N3N VB4 0 0 nmos l='L4' w='W4' m='M4'
+MP8N OUTN VB2 VDD VDD pmos l='L5' w='W5' m='M5'
+MN9N OUTN X1N 0 0 nmos l='L6' w='W6' m='M6'
+
+MN6 VB3 VB3 VB4 0 nmos l='L7' w='W7' m='M7'
+MN7 VB4 VB4 0 0 nmos l='L8' w='W8' m='M8'
+
+R1P OUTP NCP 'R0'
+C1P NCP X1P 'C0'
+R1N OUTN NCN 'R0'
+C1N NCN X1N 'C0'
+
+CLP OUTP 0 'C2'
+CLN OUTN 0 'C2'
+
+R2P OUTP VCMFB 'R1'
+C2P OUTP VCMFB 'C1'
+R2N OUTN VCMFB 'R1'
+C2N OUTN VCMFB 'C1'
+
+MP10 P11S VB5 VDD VDD pmos l='L9' w='W9' m='M9'
+MP11L CM_CTRL VCMFB P11S VDD pmos l='L10' w='W10' m='M10'
+MP11R N12G VREF P11S VDD pmos l='L10' w='W10' m='M10'
+
+MN12L CM_CTRL N12G N13L 0 nmos l='L11' w='W11' m='M11'
+MN12R N12G N12G N13R 0 nmos l='L11' w='W11' m='M11'
+
+MN13L N13L N13R 0 0 nmos l='L12' w='W12' m='M12'
+MN13R N13R N13R 0 0 nmos l='L12' w='W12' m='M12'
+
+.ends FC_CORE
+
+* Differential-mode circuit supplies
+VVDD VDD 0 DC=1.2
+
+* Common-mode circuit has a separate supply so that I(VVDD)
+* measures only the original differential-mode circuit.
+VVDDC VDDC 0 DC=1.2
+
+VVCM VCM_IN 0 DC=0.6
+VVB1 VB1 0 DC=0.75
+VVB2 VB2 0 DC=0.75
+VVB5 VB5 0 DC=0.75
+VVREF VREF 0 DC=0.6
+
+* Differential input: VINP - VINN = 1 V
+VINPD INPD VCM_IN DC 0 AC 0.5
+VINND INND VCM_IN DC 0 AC 0.5 180
+
+* Common-mode input: VINP = VINN = 1 V
+VINPC INPC VCM_IN DC 0 AC 1.0
+VINNC INNC VCM_IN DC 0 AC 1.0
+
+XDIFF VDD VB1 VB2 VB5 VREF
++ INPD INND OUTPD OUTND FC_CORE
+
+XCOMMON VDDC VB1 VB2 VB5 VREF
++ INPC INNC OUTPC OUTNC FC_CORE
+
+* Differential output:
+* VOD = V(OUTPD) - V(OUTND)
+EVOD VOD 0 OUTPD OUTND 1.0
+
+* Common-mode output:
+* VOCMOUT = 0.5 * (V(OUTPC) + V(OUTNC))
+EVCMP VOCMH 0 OUTPC 0 0.5
+EVCMN VOCMOUT VOCMH OUTNC 0 0.5
+
+.option MEASFORM=2 MEASDGT=8
+
+.dc VVDD 1.2 1.2 0.1
+
+.measure dc negative_total_current_uA
++ FIND PAR('I(VVDD)*1e6') AT=1.2
+
+.ac dec 10 1k 10G
+
+.measure ac gain_db
++ FIND VDB(VOD) AT=1k
+
+.measure ac log10_ugbw
++ FIND PAR('LOG10(HERTZ)')
++ WHEN VDB(VOD)=0 FALL=1
+
+.measure ac pm_deg
++ FIND PAR('VP(VOD)-180*VP(VOD)/ABS(VP(VOD))')
++ WHEN VDB(VOD)=0 FALL=1
+
+.measure ac cmrr_db
++ FIND PAR('VDB(VOD)-VDB(VOCMOUT)') AT=1k
+
+.end

@@ -1,0 +1,50 @@
+* Two stage OPAMP - HSPICE
+.include "pdk"
+.include "@PARAM_PATH@"
+
+mp1 n4 n4 VDD VDD pmos l='L0' w='W0' m='M0'
+mp2 n5 n4 VDD VDD pmos l='L0' w='W0' m='M0'
+
+mn1 n4 n2 n3 n3 nmos l='L1' w='W1' m='M1'
+mn2 n5 n1 n3 n3 nmos l='L1' w='W1' m='M1'
+
+mn3 n3 n6 VSS VSS nmos l='L2' w='W2' m='M2'
+
+mn4 n6 n6 VSS VSS nmos l='L3' w='W3' m='M3'
+
+mp3 vout n5 VDD VDD pmos l='L4' w='W4' m='M4'
+
+mn5 vout n6 VSS VSS nmos l='L5' w='W5' m='M5'
+
+cc n5 vout 'C0'
+ibias VDD n6 'I0'
+
+vin in 0 DC=0 AC=1.0
+ein1 n1 cm in 0 0.5
+ein2 n2 cm in 0 -0.5
+
+vcm cm 0 DC=0.6
+vdd VDD 0 DC=1.2
+vss 0 VSS DC=0
+
+.option MEASFORM=2 MEASDGT=8
+
+.dc vdd 1.2 1.2 0.1
+
+.measure dc negative_total_current_uA
++ FIND PAR('I(vdd)*1e6') AT=1.2
+
+.ac dec 10 1k 10G
+
+.measure ac gain_db
++ FIND VDB(vout) AT=1k
+
+.measure ac log10_ugbw
++ FIND PAR('LOG10(HERTZ)')
++ WHEN VDB(vout)=0 FALL=1
+
+.measure ac pm_deg
++ FIND PAR('VP(vout)-180*VP(vout)/ABS(VP(vout))')
++ WHEN VDB(vout)=0 FALL=1
+
+.end
