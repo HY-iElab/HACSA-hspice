@@ -291,15 +291,11 @@ The solver proposes a value `v` in `[0, 1]`, which is converted to an actual val
 
 Linear scale:
 
-$$
-x = \mathrm{lower} + v(\mathrm{upper} - \mathrm{lower})
-$$
+$x = \mathrm{lower} + v(\mathrm{upper} - \mathrm{lower})$
 
 Logarithmic scale:
 
-$$
-x = 10^{\log_{10}(\mathrm{lower}) + v(\log_{10}(\mathrm{upper}) - \log_{10}(\mathrm{lower}))}
-$$
+$x = 10^{\log_{10}(\mathrm{lower}) + v(\log_{10}(\mathrm{upper}) - \log_{10}(\mathrm{lower}))}$
 
 The converted value is rounded to the specified `resolution`. `is_log` does not change the value range, but it can affect solver performance.
 
@@ -311,19 +307,11 @@ The FoM is the score that the `Solver` maximizes. The default FoM uses separate 
 
 While any target remains unmet, only shortfalls contribute to the score.
 
-$$
-\mathrm{pre\_FoM}
-= \sum_i \min(\mathrm{spec}_i - \mathrm{target}_i, 0)
-\times \mathrm{pre\_weight}_i
-$$
+$\mathrm{FoM_pre} = \sum_i \min(\mathrm{spec}_i - \mathrm{target}_i, 0) \times \mathrm{weight_pre}_i$
 
 A design that meets every target has a `pre_FoM` of 0. The following score is applied to that design.
 
-$$
-\mathrm{post\_FoM}
-= \sum_i (\mathrm{spec}_i - \mathrm{target}_i)
-\times \mathrm{post\_weight}_i
-$$
+$\mathrm{FoM_post} = \sum_i (\mathrm{spec}_i - \mathrm{target})_i \times \mathrm{weight_post}_i$
 
 If `early_stop` is `true`, the run stops when the best FoM is 0 or greater. Use the default, `false`, to keep improving the score after the targets are met.
 
@@ -654,15 +642,11 @@ solver가 제안한 `[0, 1]` 범위의 값 `v`는 실제 값 `x`로 다음처럼
 
 linear scale:
 
-$$
-x = \mathrm{lower} + v(\mathrm{upper} - \mathrm{lower})
-$$
+$x = \mathrm{lower} + v(\mathrm{upper} - \mathrm{lower})$
 
 log scale:
 
-$$
-x = 10^{\log_{10}(\mathrm{lower}) + v(\log_{10}(\mathrm{upper}) - \log_{10}(\mathrm{lower}))}
-$$
+$x = 10^{\log_{10}(\mathrm{lower}) + v(\log_{10}(\mathrm{upper}) - \log_{10}(\mathrm{lower}))}$
 
 변환한 값은 `resolution`에 맞춰 반올림된다. `is_log`는 값의 범위를 바꾸지 않지만 solver 성능에는 영향을 줄 수 있다.
 
@@ -674,19 +658,11 @@ FoM은 `Solver`가 최대화하는 점수이다. 기본 FoM은 target 달성 전
 
 target을 만족하지 못한 동안에는 부족분만 반영한다.
 
-$$
-\mathrm{pre\_FoM}
-= \sum_i \min(\mathrm{spec}_i - \mathrm{target}_i, 0)
-\times \mathrm{pre\_weight}_i
-$$
+$\mathrm{FoM_pre} = \sum_i \min(\mathrm{spec}_i - \mathrm{target}_i, 0) \times \mathrm{weight_pre}_i$
 
 모든 target을 만족한 design의 `pre_FoM`은 0이다. 이 design에는 다음 점수를 적용한다.
 
-$$
-\mathrm{post\_FoM}
-= \sum_i (\mathrm{spec}_i - \mathrm{target}_i)
-\times \mathrm{post\_weight}_i
-$$
+$\mathrm{FoM_post} = \sum_i (\mathrm{spec}_i - \mathrm{target})_i \times \mathrm{weight_post}_i$
 
 `early_stop`이 `true`이면 최고 FoM이 0 이상일 때 종료한다. 달성 후 점수를 더 높이려면 기본값 `false`를 사용한다.
 
